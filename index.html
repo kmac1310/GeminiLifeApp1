@@ -761,10 +761,10 @@
 
     <div class="lifetime-counter">
       <div class="lifetime-title">💀 YOUR LIFETIME TOKEN BALANCE</div>
-      <div class="lifetime-tokens" id="lifetimeTokens">42,048,000</div>
+      <div class="lifetime-tokens" id="lifetimeTokens">0</div>
       <div class="lifetime-bar">
         <div class="lifetime-progress" id="lifetimeProgress"></div>
-        <div class="countdown-text" id="lifetimePercent">60% REMAINING</div>
+        <div class="countdown-text" id="lifetimePercent">0% REMAINING</div>
       </div>
     </div>
 
@@ -795,22 +795,22 @@
 
       <div class="reality-display">
         <div class="reality-card" style="border-top: 3px solid #9c88ff; background: linear-gradient(135deg, rgba(156, 136, 255, 0.1) 0%, rgba(0, 0, 0, 0.5) 100%);">
-          <div class="reality-value" id="sleepTokens" style="color: #9c88ff;">420</div>
+          <div class="reality-value" id="sleepTokens" style="color: #9c88ff;">0</div>
           <div class="reality-label">Sleep Zone</div>
           <div class="reality-verdict" style="background: rgba(156, 136, 255, 0.2); color: #9c88ff;">🔋 RECHARGE BATTERY</div>
         </div>
         <div class="reality-card" style="border-top: 3px solid #ff7979;">
-          <div class="reality-value" id="workTokens" style="color: #ff7979;">600</div>
+          <div class="reality-value" id="workTokens" style="color: #ff7979;">0</div>
           <div class="reality-label">Livelihood Zone</div>
           <div class="reality-verdict" style="background: rgba(255, 121, 121, 0.2); color: #ff7979;">💼 MEANS OF SUPPORT</div>
         </div>
         <div class="reality-card productive">
-          <div class="reality-value" id="onTimeTokens" style="color: var(--primary);">420</div>
+          <div class="reality-value" id="onTimeTokens" style="color: var(--primary);">0</div>
           <div class="reality-label">On-Time Zone</div>
           <div class="reality-verdict verdict-productive">🚀 THE DIFFERENCE MAKER</div>
         </div>
         <div class="reality-card">
-          <div class="reality-value" id="dollarPerMin">$1.28</div>
+          <div class="reality-value" id="dollarPerMin">$0.00</div>
           <div class="reality-label">$ Per Work Minute</div>
           <div class="reality-verdict" id="salaryVerdict">EVALUATED</div>
         </div>
@@ -971,6 +971,7 @@
     // --- STATE MANAGEMENT ---
     let entries = [];
     let today = new Date().toDateString();
+    const LIFETIME_EXPECTANCY_YEARS = 82;
 
     // --- DOM REFERENCES ---
     const ageInput = document.getElementById('age');
@@ -1001,15 +1002,14 @@
       }
       const savedToday = localStorage.getItem('1440time_today');
       if (savedToday !== today) {
-        // It's a new day, clear entries
         entries = [];
         localStorage.removeItem('1440time_entries');
         localStorage.setItem('1440time_today', today);
       }
-      ageInput.value = localStorage.getItem('1440time_age') || '30';
-      sleepInput.value = localStorage.getItem('1440time_sleep') || '7';
-      workInput.value = localStorage.getItem('1440time_work') || '8';
-      salaryInput.value = localStorage.getItem('1440time_salary') || '60000';
+      ageInput.value = localStorage.getItem('1440time_age') || '0';
+      sleepInput.value = localStorage.getItem('1440time_sleep') || '0';
+      workInput.value = localStorage.getItem('1440time_work') || '0';
+      salaryInput.value = localStorage.getItem('1440time_salary') || '0';
     };
 
     // --- MAIN LOGIC & UI UPDATES ---
@@ -1018,7 +1018,7 @@
       const sleep = parseFloat(sleepInput.value) || 0;
       const work = parseFloat(workInput.value) || 0;
       const salary = parseFloat(salaryInput.value) || 0;
-
+      
       // Ensure sleep and work don't exceed 24 hours
       if (sleep + work > 24) {
         alert("Sleep and work hours cannot exceed 24 in total. Please adjust.");
@@ -1042,11 +1042,11 @@
         document.getElementById('dollarPerMin').textContent = '$0.00';
       }
 
-      // Lifetime stats
-      const totalMinutesInLife = 1440 * 365.25 * 80;
+      // Lifetime stats based on 82-year expectancy
+      const totalMinutesInLife = 1440 * 365.25 * LIFETIME_EXPECTANCY_YEARS;
       const minutesLived = Math.round(1440 * 365.25 * age);
       const minutesLeft = totalMinutesInLife - minutesLived;
-      const percentLived = (minutesLived / totalMinutesInLife * 100).toFixed(2);
+      const percentLived = (minutesLived / totalMinutesInLife * 100 || 0).toFixed(2);
       
       document.getElementById('daysLived').textContent = Math.round(minutesLived / 1440);
       document.getElementById('daysLeft').textContent = Math.round(minutesLeft / 1440);
@@ -1064,8 +1064,7 @@
       document.getElementById('wastedToday').textContent = wastedMinutes;
       document.getElementById('dailyWaste').textContent = wastedMinutes;
       
-      const freeTimeMinutes = availableMinutes - totalLoggedMinutes + wastedMinutes + productiveMinutes + necessaryMinutes;
-
+      const freeTimeMinutes = availableMinutes - (totalLoggedMinutes - wastedMinutes - productiveMinutes - necessaryMinutes);
       const wastePercent = (wastedMinutes / freeTimeMinutes * 100 || 0).toFixed(0);
       const productivePercent = (productiveMinutes / freeTimeMinutes * 100 || 0).toFixed(0);
 
@@ -1073,60 +1072,46 @@
       document.getElementById('productivePercent').textContent = `${productivePercent}%`;
       document.getElementById('yearlyWaste').textContent = (wastedMinutes * 365.25 / 60).toFixed(0);
 
-      updateMirrorMessage(wastedMinutes, productiveMinutes, availableMinutes, totalLoggedMinutes);
+      updateMirrorMessage(wastedMinutes, productiveMinutes, availableMinutes);
       generateDayGrid(sleep, work, entries);
-      
-      // Update the progress bar for the day based on total time logged
-      const progressPercent = (totalLoggedMinutes / availableMinutes) * 100;
-      document.getElementById('dailyProgress').style.width = `${Math.min(progressPercent, 100)}%`;
     };
 
     const generateDayGrid = (sleep, work, entries) => {
       dayGrid.innerHTML = '';
-      const totalMinutes = 1440;
+      const totalBlocks = 24;
       const sleepMinutes = Math.round(sleep * 60);
       const workMinutes = Math.round(work * 60);
-
-      const minutesPerBlock = 60; // Each block represents 60 minutes
-      const totalBlocks = 24;
-
-      // Group entries by hour
+      const totalSleepBlocks = Math.ceil(sleepMinutes / 60);
+      const totalWorkBlocks = Math.ceil(workMinutes / 60);
+      
       const hourlyEntries = new Array(totalBlocks).fill(0).map(() => ({ productive: 0, waste: 0, necessary: 0 }));
       entries.forEach(entry => {
         const startHour = 0; // Simplified assumption for visualization
         const endHour = startHour + Math.ceil(entry.minutes / 60);
         for (let i = 0; i < Math.ceil(entry.minutes / 60); i++) {
           const hourIndex = (startHour + i) % 24;
-          hourlyEntries[hourIndex][entry.type] += Math.min(60, entry.minutes);
+          if (hourlyEntries[hourIndex]) {
+            hourlyEntries[hourIndex][entry.type] += Math.min(60, entry.minutes);
+          }
         }
       });
 
       for (let i = 0; i < totalBlocks; i++) {
         let blockClass = 'hour-available';
         let tooltip = `Hour ${i}:00 - ${i}:59`;
-        const hourMinutes = 60;
 
-        // Determine if block is sleep or work
-        const totalSleepBlocks = Math.ceil(sleepMinutes / 60);
-        const totalWorkBlocks = Math.ceil(workMinutes / 60);
-        
         if (i < totalSleepBlocks) {
           blockClass = 'hour-sleep';
-          tooltip = 'Sleep Zone';
+          tooltip = `Sleep Zone (${sleep} hours)`;
         } else if (i < totalSleepBlocks + totalWorkBlocks) {
           blockClass = 'hour-work';
-          tooltip = 'Livelihood Zone';
+          tooltip = `Livelihood Zone (${work} hours)`;
         } else {
-          // Check for logged activities
-          if (hourlyEntries[i].waste > hourlyEntries[i].productive && hourlyEntries[i].waste > hourlyEntries[i].necessary) {
-              blockClass = 'hour-waste';
-              tooltip = `Waste: ${hourlyEntries[i].waste} min`;
-          } else if (hourlyEntries[i].productive > hourlyEntries[i].waste && hourlyEntries[i].productive > hourlyEntries[i].necessary) {
-              blockClass = 'hour-productive';
-              tooltip = `Productive: ${hourlyEntries[i].productive} min`;
-          } else if (hourlyEntries[i].necessary > hourlyEntries[i].waste && hourlyEntries[i].necessary > hourlyEntries[i].productive) {
-              blockClass = 'hour-necessary';
-              tooltip = `Necessary: ${hourlyEntries[i].necessary} min`;
+          const entryCounts = hourlyEntries[i];
+          const sortedEntries = Object.keys(entryCounts).sort((a, b) => entryCounts[b] - entryCounts[a]);
+          if (entryCounts[sortedEntries[0]] > 0) {
+            blockClass = `hour-${sortedEntries[0]}`;
+            tooltip = `Logged: ${entryCounts[sortedEntries[0]]} min (${sortedEntries[0]})`;
           }
         }
         
@@ -1266,6 +1251,13 @@
     
     const initialize = () => {
       loadState();
+      
+      // Reset to 0000 on initial load to force user input
+      ageInput.value = '0';
+      sleepInput.value = '0';
+      workInput.value = '0';
+      salaryInput.value = '0';
+
       // Add event listeners to input fields to trigger recalculation on change
       ageInput.addEventListener('input', updateAllCalculations);
       sleepInput.addEventListener('input', updateAllCalculations);
