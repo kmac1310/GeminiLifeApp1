@@ -971,7 +971,7 @@
     // --- STATE MANAGEMENT ---
     let entries = [];
     let today = new Date().toDateString();
-    const LIFETIME_EXPECTANCY_YEARS = 80; // Changed from 82 to 80
+    const LIFETIME_EXPECTANCY_YEARS = 80;
 
     // --- DOM REFERENCES ---
     const ageInput = document.getElementById('age');
@@ -1155,9 +1155,17 @@
       const minutes = parseInt(minutesInput.value);
       const type = typeSelect.value;
       const label = labelInput.value.trim();
+      const onTimeTokens = parseFloat(document.getElementById('onTimeTokens').textContent) || 0;
+      const totalLoggedMinutes = entries.reduce((sum, entry) => sum + entry.minutes, 0);
+      const minutesToAdd = minutes;
 
-      if (isNaN(minutes) || minutes <= 0 || label === '') {
+      if (isNaN(minutesToAdd) || minutesToAdd <= 0 || label === '') {
         alert("Please enter a valid duration (in minutes) and a description.");
+        return;
+      }
+      
+      if (totalLoggedMinutes + minutesToAdd > onTimeTokens) {
+        alert("🚨 WARNING: You have no more On-Time tokens available today! You cannot add more time than you have.");
         return;
       }
       
