@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>1440TIME™ - The Undeniable Truth of Your Time</title>
   <style>
+    /* ------------------- Global Styling ------------------- */
     * {
       margin: 0;
       padding: 0;
@@ -17,12 +18,12 @@
       --danger: #ff3366;
       --warning: #ffaa00;
       --success: #00ff88;
-      --waste: #ff3366;
+      --low-return: #ff3366;
       --dark: #0a0a0a;
       --card: rgba(255, 255, 255, 0.03);
       --border: rgba(255, 255, 255, 0.1);
-      --on-time-available: #2c2c2c; /* New color for available on-time blocks */
-      --on-time-label: #00d4ff; /* Color for the new on-time countdown label */
+      --on-time-available: #2c2c2c;
+      --on-time-label: #00d4ff;
     }
 
     body {
@@ -61,6 +62,7 @@
       z-index: 2;
     }
 
+    /* ------------------- Header and Main Display ------------------- */
     .header {
       text-align: center;
       margin-bottom: 40px;
@@ -68,14 +70,8 @@
     }
 
     @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
@@ -255,6 +251,7 @@
       font-size: 0.9rem;
     }
 
+    /* ------------------- Card and Form Elements ------------------- */
     .card {
       background: var(--card);
       border-radius: 20px;
@@ -272,14 +269,8 @@
     }
 
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .card-header {
@@ -357,7 +348,7 @@
       overflow: hidden;
     }
 
-    .reality-card.waste {
+    .reality-card.low-return {
       border-color: var(--danger);
       background: linear-gradient(135deg, rgba(255, 51, 102, 0.1) 0%, rgba(0, 0, 0, 0.5) 100%);
     }
@@ -403,9 +394,9 @@
       text-transform: uppercase;
     }
 
-    .verdict-waste {
+    .verdict-low-return {
       background: rgba(255, 51, 102, 0.2);
-      color: var(--danger);
+      color: var(--low-return);
     }
 
     .verdict-productive {
@@ -413,6 +404,7 @@
       color: var(--success);
     }
 
+    /* ------------------- Time Visualization ------------------- */
     .time-visualization {
       margin: 30px 0;
       padding: 20px;
@@ -447,11 +439,12 @@
 
     .hour-sleep { background: linear-gradient(135deg, #9c88ff, #8e7bff); }
     .hour-work { background: #e74c3c; }
-    .hour-waste { background: var(--waste); }
+    .hour-low-return { background: var(--low-return); }
     .hour-productive { background: var(--success); }
     .hour-available { background: var(--on-time-available); }
     .hour-necessary { background: #3498db; }
 
+    /* ------------------- Activity Log and Buttons ------------------- */
     .activity-categories {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -477,7 +470,7 @@
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     }
 
-    .category-btn.waste {
+    .category-btn.low-return {
       background: linear-gradient(135deg, rgba(255, 51, 102, 0.1) 0%, transparent 100%);
       border-color: var(--danger);
     }
@@ -556,8 +549,8 @@
       position: relative;
     }
 
-    .entry-item.waste-entry {
-      border-left: 4px solid var(--danger);
+    .entry-item.low-return-entry {
+      border-left: 4px solid var(--low-return);
       background: linear-gradient(90deg, rgba(255, 51, 102, 0.05) 0%, transparent 100%);
     }
 
@@ -572,14 +565,8 @@
     }
 
     @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateX(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
     }
 
     .entry-info {
@@ -599,23 +586,13 @@
       letter-spacing: 1px;
     }
 
-    .badge-waste { background: rgba(255, 51, 102, 0.2); color: var(--danger); }
+    .badge-low-return { background: rgba(255, 51, 102, 0.2); color: var(--low-return); }
     .badge-productive { background: rgba(0, 255, 136, 0.2); color: var(--success); }
     .badge-necessary { background: rgba(52, 152, 219, 0.2); color: #3498db; }
 
-    .entry-details {
-      flex-grow: 1;
-    }
-
-    .entry-label-text {
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    .entry-minutes-text {
-      font-size: 0.85rem;
-      color: #999;
-    }
+    .entry-details { flex-grow: 1; }
+    .entry-label-text { font-size: 1rem; font-weight: 600; }
+    .entry-minutes-text { font-size: 0.85rem; color: #999; }
     
     .delete-btn {
       background: rgba(255, 51, 102, 0.2);
@@ -634,6 +611,7 @@
       box-shadow: 0 5px 15px rgba(255, 51, 102, 0.2);
     }
 
+    /* ------------------- Accountability and History ------------------- */
     .accountability-section {
       background: linear-gradient(135deg, rgba(255, 170, 0, 0.1) 0%, rgba(255, 51, 102, 0.1) 100%);
       border: 2px solid var(--warning);
@@ -679,7 +657,7 @@
     }
     
     .historical-insights {
-        display: none; /* Initially hidden */
+        display: none;
         margin-top: 30px;
         background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
         border: 2px solid var(--success);
@@ -712,7 +690,7 @@
     .calendar-day {
         position: relative;
         width: 100%;
-        padding-top: 100%; /* Makes cells square */
+        padding-top: 100%;
         background: rgba(255, 255, 255, 0.05);
         border-radius: 5px;
         cursor: pointer;
@@ -741,7 +719,7 @@
     }
     
     .calendar-day.productive-day { background: var(--success); }
-    .calendar-day.wasted-day { background: var(--danger); }
+    .calendar-day.low-return-day { background: var(--low-return); }
     .calendar-day.balanced-day { background: var(--warning); }
     .calendar-day.today-day { border: 2px solid var(--secondary); }
     .calendar-day.future-day { opacity: 0.5; cursor: not-allowed; }
@@ -764,10 +742,9 @@
         border: 1px solid var(--border);
     }
     
-    .calendar-day:hover .calendar-day-tooltip {
-        opacity: 1;
-    }
+    .calendar-day:hover .calendar-day-tooltip { opacity: 1; }
 
+    /* ------------------- Mirror and Footer ------------------- */
     .mirror-section {
       background: rgba(0, 0, 0, 0.8);
       border: 3px solid var(--danger);
@@ -830,19 +807,9 @@
       font-weight: 900;
     }
 
-    .scrollbar::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .scrollbar::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 10px;
-    }
-
-    .scrollbar::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, var(--danger), var(--warning));
-      border-radius: 10px;
-    }
+    .scrollbar::-webkit-scrollbar { width: 8px; }
+    .scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
+    .scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--danger), var(--warning)); border-radius: 10px; }
 
     .footer {
       text-align: center;
@@ -850,6 +817,10 @@
       padding: 20px;
       color: #666;
       font-size: 0.9rem;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
     }
 
     .footer .trademark {
@@ -862,8 +833,78 @@
       50% { opacity: 0.5; }
     }
 
-    .flash-warning {
-      animation: flash 1s infinite;
+    .flash-warning { animation: flash 1s infinite; }
+    
+    /* ------------------- Modal Styling ------------------- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      display: none;
+    }
+
+    .modal-content {
+      background: var(--dark);
+      border: 2px solid var(--primary);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
+      text-align: center;
+      position: relative;
+      animation: modal-fade-in 0.5s ease-out;
+    }
+
+    @keyframes modal-fade-in {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 2rem;
+      color: var(--secondary);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-header {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .modal-body p {
+      font-size: 1.1rem;
+      color: #ccc;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .modal-body strong {
+      color: var(--warning);
+      font-weight: 700;
+    }
+    
+    .modal-body .input-field {
+        margin-top: 20px;
+    }
+
+    .modal-footer button {
+      margin-top: 20px;
+      padding: 15px 40px;
+      font-size: 1.1rem;
     }
   </style>
 </head>
@@ -896,14 +937,14 @@
           <div class="truth-label">Life Already Spent</div>
         </div>
         <div class="truth-stat">
-          <div class="truth-number" id="wastedToday">0</div>
-          <div class="truth-label">Minutes Wasted Today</div>
+          <div class="truth-number" id="lowReturnToday">0</div>
+          <div class="truth-label" id="lowReturnTodayLabel">Low-Return Minutes Today</div>
         </div>
       </div>
     </div>
 
     <div class="lifetime-counter">
-      <div class="lifetime-title">💀 YOUR LIFETIME TOKEN BALANCE</div>
+      <div class="lifetime-title">YOUR LIFETIME TOKEN BALANCE</div>
       <div class="lifetime-tokens" id="lifetimeTokens">0</div>
       <div class="lifetime-bar">
         <div class="lifetime-progress" id="lifetimeProgress"></div>
@@ -939,19 +980,19 @@
       <div class="reality-display">
         <div class="reality-card" style="border-top: 3px solid #9c88ff; background: linear-gradient(135deg, rgba(156, 136, 255, 0.1) 0%, rgba(0, 0, 0, 0.5) 100%);">
           <div class="reality-value" id="sleepTokens" style="color: #9c88ff;">0</div>
-          <div class="reality-label">Sleep Zone</div>
+          <div class="reality-label">Sleep Zone Tokens</div>
           <div class="reality-verdict" style="background: rgba(156, 136, 255, 0.2); color: #9c88ff;">🔋 RECHARGE BATTERY</div>
         </div>
         <div class="reality-card" style="border-top: 3px solid #ff7979;">
           <div class="reality-value" id="workTokens" style="color: #ff7979;">0</div>
-          <div class="reality-label">Livelihood Zone</div>
+          <div class="reality-label">Livelihood Zone Tokens</div>
           <div class="reality-verdict" style="background: rgba(255, 121, 121, 0.2); color: #ff7979;">💼 MEANS OF SUPPORT</div>
         </div>
         <div class="reality-card productive reality-card-on-time">
           <div class="reality-value" id="onTimeTokens" style="color: var(--primary);">0</div>
-          <div class="reality-label">On-Time Zone</div>
+          <div class="reality-label">On-Time Token Zone</div>
           <div class="reality-verdict verdict-productive">🚀 THE DIFFERENCE MAKER</div>
-          <div class="on-time-countdown" id="onTimeRemaining">0 MINUTES REMAINING</div>
+          <div class="on-time-countdown" id="onTimeRemaining">0 TOKENS REMAINING</div>
         </div>
         <div class="reality-card">
           <div class="reality-value" id="dollarPerMin">$0.00</div>
@@ -1008,17 +1049,17 @@
           🧘 Wellness
           <span class="category-label">PRODUCTIVE</span>
         </div>
-        <div class="category-btn waste" onclick="setActivity('📱 Social Media', 'waste')">
+        <div class="category-btn low-return" id="socialMediaBtn" onclick="setActivity('📱 Social Media', 'low-return')">
           📱 Social
-          <span class="category-label">TIME SINK</span>
+          <span class="category-label" id="socialMediaLabel">LOW-RETURN</span>
         </div>
-        <div class="category-btn waste" onclick="setActivity('📺 Netflix/TV', 'waste')">
+        <div class="category-btn low-return" id="netflixBtn" onclick="setActivity('📺 Netflix/TV', 'low-return')">
           📺 TV
-          <span class="category-label">TIME SINK</span>
+          <span class="category-label" id="netflixLabel">LOW-RETURN</span>
         </div>
-        <div class="category-btn waste" onclick="setActivity('🎮 Gaming', 'waste')">
+        <div class="category-btn low-return" id="gamingBtn" onclick="setActivity('🎮 Gaming', 'low-return')">
           🎮 Gaming
-          <span class="category-label">TIME SINK</span>
+          <span class="category-label" id="gamingLabel">LOW-RETURN</span>
         </div>
         <div class="category-btn necessary" onclick="setActivity('🍽️ Eating/Cooking', 'necessary')">
           🍽️ Eating
@@ -1040,15 +1081,15 @@
 
       <div class="entry-form">
         <div class="input-field">
-          <label for="minutes">Minutes</label>
+          <label for="minutes">Tokens</label>
           <input type="number" id="minutes" placeholder="30" min="1">
         </div>
         <div class="input-field">
           <label for="type">Category</label>
           <select id="type">
-            <option value="waste">Wasted Time</option>
-            <option value="necessary">Necessary</option>
-            <option value="productive">Productive</option>
+            <option value="low-return" id="optionLowReturn">Low-Return Tokens</option>
+            <option value="necessary">Necessary Tokens</option>
+            <option value="productive">Productive Tokens</option>
           </select>
         </div>
         <div class="input-field">
@@ -1065,20 +1106,20 @@
       <div class="accountability-title">📊 Your Undeniable Statistics</div>
       <div class="accountability-grid">
         <div class="accountability-card">
-          <div class="accountability-value" id="wastePercent">0%</div>
-          <div class="accountability-message">Of your logged time is WASTED</div>
+          <div class="accountability-value" id="lowReturnPercent">0%</div>
+          <div class="accountability-message" id="lowReturnPercentMessage"></div>
         </div>
         <div class="accountability-card">
           <div class="accountability-value" id="productivePercent">0%</div>
           <div class="accountability-message">Of your logged time is PRODUCTIVE</div>
         </div>
         <div class="accountability-card">
-          <div class="accountability-value" id="dailyWaste">0</div>
-          <div class="accountability-message">Minutes thrown away TODAY</div>
+          <div class="accountability-value" id="dailyLowReturn">0</div>
+          <div class="accountability-message" id="dailyLowReturnMessage"></div>
         </div>
         <div class="accountability-card">
-          <div class="accountability-value" id="yearlyWaste">0</div>
-          <div class="accountability-message">Hours wasted this YEAR</div>
+          <div class="accountability-value" id="yearlyLowReturn">0</div>
+          <div class="accountability-message" id="yearlyLowReturnMessage"></div>
         </div>
       </div>
     </div>
@@ -1099,18 +1140,24 @@
       <div class="commitment-box">
         <div class="commitment-title">✍️ MAKE YOUR COMMITMENT</div>
         <input type="text" class="commitment-input" id="commitmentInput"
-               placeholder="I commit to stop wasting time on...">
+               placeholder="I commit to spending fewer low-return tokens...">
         <button class="commit-btn" onclick="makeCommitment()">SIGN MY TIME CONTRACT</button>
       </div>
     </div>
 
     <div class="footer">
+      <button onclick="openSettings()" style="
+        background: var(--border);
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+      ">⚙️ Settings</button>
       <button onclick="resetEverything()" style="
         background: rgba(255, 51, 102, 0.2);
         border: 1px solid var(--danger);
         color: var(--danger);
         padding: 10px 20px;
-        margin-bottom: 20px;
         font-size: 0.85rem;
         text-transform: uppercase;
       ">⚠️ Complete System Reset</button>
@@ -1118,12 +1165,50 @@
         background: var(--border);
         color: #fff;
         padding: 10px 20px;
-        margin-bottom: 20px;
         font-size: 0.85rem;
         text-transform: uppercase;
       ">View Historical Data</button>
       <p class="trademark">Think Outside the Clock™ • Control the Clock – Control the Game™</p>
       <p>© 2024 1440TIME™ System • The Truth is Undeniable</p>
+    </div>
+  </div>
+  
+  <!-- Welcome Tour Modal -->
+  <div class="modal-overlay" id="welcomeTour">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeTour()">×</span>
+      <div class="modal-header">Welcome to 1440TIME™</div>
+      <div class="modal-body">
+        <p>This is the ultimate truth app. It takes your time from an abstract concept and turns it into a concrete, tangible asset—measured in **minutes (tokens)** you can see, own, and spend.</p>
+        <p>Your day is divided into three zones:</p>
+        <p>1.  **Sleep Zone:** Your essential battery recharge.
+        2.  **Livelihood Zone:** Where you earn "time is money."
+        3.  **On-Time Token Zone:** The remaining minutes are your **On-Time Tokens**, which you can consciously spend to create the life you want. You are solely responsible for how you spend them.</p>
+        <p>The countdown clock at the top and the real-time token counter will hold you accountable. The clock doesn't lie.</p>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeTour()">I Accept The Truth</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeSettings()">×</span>
+      <div class="modal-header">⚙️ Settings</div>
+      <div class="modal-body">
+        <div class="input-field">
+          <label for="tokenTerminology">Choose Your Accountability Terminology</label>
+          <select id="tokenTerminology" class="modal-input">
+            <option value="low-return">Low-Return Tokens</option>
+            <option value="wasted">Wasted Tokens</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeSettings()">Save & Close</button>
+      </div>
     </div>
   </div>
 
@@ -1133,6 +1218,19 @@
     let today = new Date().toDateString();
     let currentDate = new Date();
     const LIFETIME_EXPECTANCY_YEARS = 80;
+    
+    // Default to 'low-return' until user changes it
+    let tokenTerminology = 'low-return';
+    const terminologyLabels = {
+        'low-return': {
+            label: 'Low-Return',
+            message: 'Low-Return'
+        },
+        'wasted': {
+            label: 'Wasted',
+            message: 'Wasted'
+        }
+    };
 
     // --- DOM REFERENCES ---
     const ageInput = document.getElementById('age');
@@ -1149,6 +1247,10 @@
     const historicalInsights = document.querySelector('.historical-insights');
     const calendarGrid = document.getElementById('calendarGrid');
     const onTimeRemainingDisplay = document.getElementById('onTimeRemaining');
+    const welcomeTourModal = document.getElementById('welcomeTour');
+    const settingsModal = document.getElementById('settingsModal');
+    const tokenTerminologySelect = document.getElementById('tokenTerminology');
+    const optionLowReturn = document.getElementById('optionLowReturn');
 
     // --- DATA PERSISTENCE ---
     const saveState = () => {
@@ -1158,6 +1260,7 @@
       localStorage.setItem('1440time_work', workInput.value);
       localStorage.setItem('1440time_salary', salaryInput.value);
       localStorage.setItem('1440time_today', today);
+      localStorage.setItem('1440time_token_terminology', tokenTerminology);
     };
 
     const loadState = () => {
@@ -1167,7 +1270,6 @@
       }
       const savedToday = localStorage.getItem('1440time_today');
       if (savedToday !== today) {
-        // This is a new day, so save the old one before resetting
         saveDailySummary();
         entries = [];
         localStorage.removeItem('1440time_entries');
@@ -1177,23 +1279,24 @@
       sleepInput.value = localStorage.getItem('1440time_sleep') || '0';
       workInput.value = localStorage.getItem('1440time_work') || '0';
       salaryInput.value = localStorage.getItem('1440time_salary') || '0';
+      tokenTerminology = localStorage.getItem('1440time_token_terminology') || 'low-return';
     };
     
     const saveDailySummary = () => {
         const history = JSON.parse(localStorage.getItem('1440time_history')) || {};
-        const wastedMinutes = entries.filter(e => e.type === 'waste').reduce((sum, entry) => sum + entry.minutes, 0);
+        const lowReturnMinutes = entries.filter(e => e.type === 'low-return').reduce((sum, entry) => sum + entry.minutes, 0);
         const productiveMinutes = entries.filter(e => e.type === 'productive').reduce((sum, entry) => sum + entry.minutes, 0);
         const necessaryMinutes = entries.filter(e => e.type === 'necessary').reduce((sum, entry) => sum + entry.minutes, 0);
-        const totalLogged = wastedMinutes + productiveMinutes + necessaryMinutes;
+        const totalLogged = lowReturnMinutes + productiveMinutes + necessaryMinutes;
         
         const summary = {
-            wastedMinutes,
+            lowReturnMinutes,
             productiveMinutes,
             necessaryMinutes,
-            totalLogged
+            totalLogged,
+            terminology: tokenTerminology
         };
         
-        // Use the saved date from localStorage, not the current date, to save the old day's data
         const oldDate = localStorage.getItem('1440time_today') || today;
         history[oldDate] = summary;
         localStorage.setItem('1440time_history', JSON.stringify(history));
@@ -1207,6 +1310,33 @@
       const minutesLeft = Math.ceil(millisecondsLeft / (1000 * 60));
       minutesLeftTodayDisplay.textContent = minutesLeft;
     };
+    
+    const updateTerminologyUI = () => {
+        const term = terminologyLabels[tokenTerminology].label;
+        const termMessage = terminologyLabels[tokenTerminology].message;
+        
+        // Update main stats labels
+        document.getElementById('lowReturnTodayLabel').textContent = `${term} Minutes Today`;
+        
+        // Update category buttons
+        const lowReturnCategoryButtons = document.querySelectorAll('.category-btn.low-return .category-label');
+        lowReturnCategoryButtons.forEach(el => {
+            el.textContent = term.toUpperCase();
+        });
+        
+        // Update accountability stats
+        document.getElementById('lowReturnPercentMessage').textContent = `Of your logged time is ${termMessage.toUpperCase()}`;
+        document.getElementById('dailyLowReturnMessage').textContent = `Minutes with ${termMessage.toLowerCase()} TODAY`;
+        document.getElementById('yearlyLowReturnMessage').textContent = `Hours with ${termMessage.toLowerCase()} this YEAR`;
+
+        // Update form options
+        if (optionLowReturn) {
+          optionLowReturn.textContent = `${term} Tokens`;
+        }
+        
+        // Update commitment placeholder
+        document.getElementById('commitmentInput').placeholder = `I commit to spending fewer ${termMessage.toLowerCase()} tokens...`;
+    };
 
     const updateAllCalculations = () => {
       const age = parseFloat(ageInput.value) || 0;
@@ -1214,7 +1344,9 @@
       const work = parseFloat(workInput.value) || 0;
       
       if (sleep + work > 24) {
-        alert("Sleep and work hours cannot exceed 24 in total. Please adjust.");
+        // Using a custom message instead of an alert
+        const message = "Sleep and work hours cannot exceed 24 in total. Please adjust.";
+        showInfoModal(message);
         return;
       }
       
@@ -1226,7 +1358,7 @@
       document.getElementById('sleepTokens').textContent = sleepMinutes;
       document.getElementById('workTokens').textContent = workMinutes;
       document.getElementById('onTimeTokens').textContent = availableMinutes;
-
+      
       // Dollar per minute
       if (salary > 0 && workMinutes > 0) {
         const yearlyWorkMinutes = workMinutes * 5 * 52; 
@@ -1251,24 +1383,23 @@
 
       // Daily stats
       const totalLoggedMinutes = entries.reduce((sum, entry) => sum + entry.minutes, 0);
-      const wastedMinutes = entries.filter(e => e.type === 'waste').reduce((sum, entry) => sum + entry.minutes, 0);
+      const lowReturnMinutes = entries.filter(e => e.type === 'low-return').reduce((sum, entry) => sum + entry.minutes, 0);
       const productiveMinutes = entries.filter(e => e.type === 'productive').reduce((sum, entry) => sum + entry.minutes, 0);
       
-      document.getElementById('wastedToday').textContent = wastedMinutes;
-      document.getElementById('dailyWaste').textContent = wastedMinutes;
+      document.getElementById('lowReturnToday').textContent = lowReturnMinutes;
+      document.getElementById('dailyLowReturn').textContent = lowReturnMinutes;
       
-      const wastePercent = (wastedMinutes / totalLoggedMinutes * 100 || 0).toFixed(0);
+      const lowReturnPercent = (lowReturnMinutes / totalLoggedMinutes * 100 || 0).toFixed(0);
       const productivePercent = (productiveMinutes / totalLoggedMinutes * 100 || 0).toFixed(0);
 
-      document.getElementById('wastePercent').textContent = `${wastePercent}%`;
+      document.getElementById('lowReturnPercent').textContent = `${lowReturnPercent}%`;
       document.getElementById('productivePercent').textContent = `${productivePercent}%`;
-      document.getElementById('yearlyWaste').textContent = (wastedMinutes * 365.25 / 60).toFixed(0);
+      document.getElementById('yearlyLowReturn').textContent = (lowReturnMinutes * 365.25 / 60).toFixed(0);
       
-      // NEW: Calculate and display remaining on-time minutes
       const onTimeRemaining = availableMinutes - totalLoggedMinutes;
-      onTimeRemainingDisplay.textContent = `${onTimeRemaining} MINUTES REMAINING`;
+      onTimeRemainingDisplay.textContent = `${onTimeRemaining} TOKENS REMAINING`;
 
-      updateMirrorMessage(wastedMinutes, productiveMinutes, availableMinutes, totalLoggedMinutes);
+      updateMirrorMessage(lowReturnMinutes, productiveMinutes, availableMinutes, totalLoggedMinutes);
       generateDayGrid(sleep, work, entries);
       renderHistoricalData();
     };
@@ -1299,7 +1430,6 @@
             totalLoggedBlocks += loggedBlocks[type];
         }
         
-        // Render sleep blocks
         for (let i = 0; i < sleepBlocks; i++) {
             const block = document.createElement('div');
             block.className = `hour-block hour-sleep`;
@@ -1307,7 +1437,6 @@
             dayGrid.appendChild(block);
         }
 
-        // Render work blocks
         for (let i = 0; i < workBlocks; i++) {
             const block = document.createElement('div');
             block.className = `hour-block hour-work`;
@@ -1315,12 +1444,10 @@
             dayGrid.appendChild(block);
         }
 
-        // Render on-time blocks (logged and available)
         let totalOnTimeBlocks = totalBlocks - sleepBlocks - workBlocks;
         let blocksRendered = 0;
         
-        // Render logged on-time blocks
-        const typeOrder = ['productive', 'waste', 'necessary'];
+        const typeOrder = ['productive', 'low-return', 'necessary'];
         typeOrder.forEach(type => {
             const count = loggedBlocks[type] || 0;
             for (let i = 0; i < count; i++) {
@@ -1332,7 +1459,6 @@
             }
         });
         
-        // Render remaining available on-time blocks
         const availableBlocks = totalOnTimeBlocks - blocksRendered;
         for (let i = 0; i < availableBlocks; i++) {
             const block = document.createElement('div');
@@ -1342,21 +1468,22 @@
         }
     };
     
-    const updateMirrorMessage = (wasted, productive, available, totalLogged) => {
+    const updateMirrorMessage = (lowReturn, productive, available, totalLogged) => {
       let message = '';
+      const termMessage = terminologyLabels[tokenTerminology].message;
       
       const availableLogged = totalLogged;
-      const wastedPercent = (wasted / availableLogged * 100 || 0).toFixed(0);
+      const lowReturnPercent = (lowReturn / availableLogged * 100 || 0).toFixed(0);
       const productivePercent = (productive / availableLogged * 100 || 0).toFixed(0);
       
-      if (wasted > productive && wasted > 0) {
-        message = `You've wasted ${wasted} minutes today. This is ${wastedPercent}% of your logged time. Your choices matter.`;
+      if (lowReturn > productive && lowReturn > 0) {
+        message = `You've spent ${lowReturn} tokens today on ${termMessage.toLowerCase()} activities. This is ${lowReturnPercent}% of your logged time. Your choices matter.`;
         mirrorMessage.classList.add('flash-warning');
-      } else if (productive > wasted && productive > 0) {
-        message = `Great job! You've used ${productive} minutes for productive activities. That's ${productivePercent}% of your logged time. Keep going!`;
+      } else if (productive > lowReturn && productive > 0) {
+        message = `Great job! You've used ${productive} tokens for productive activities. That's ${productivePercent}% of your logged time. Keep going!`;
         mirrorMessage.classList.remove('flash-warning');
-      } else if (wasted === 0 && productive === 0) {
-        message = `You have ${available} minutes of unallocated time. How will you use it?`;
+      } else if (lowReturn === 0 && productive === 0) {
+        message = `You have ${available} tokens of unallocated time. How will you use it?`;
         mirrorMessage.classList.remove('flash-warning');
       } else {
         message = 'Your time is a reflection of your priorities. What does your day say about you?';
@@ -1369,12 +1496,12 @@
     const renderHistoricalData = () => {
         calendarGrid.innerHTML = '';
         const history = JSON.parse(localStorage.getItem('1440time_history')) || {};
+        const termMessage = terminologyLabels[tokenTerminology].message;
         
         const todayKey = new Date().toDateString();
         
-        // Generate last 30 days of calendar data
         const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-        const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay(); // 0 for Sunday, 1 for Monday
+        const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
         
         const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         dayLabels.forEach(label => {
@@ -1384,7 +1511,6 @@
             calendarGrid.appendChild(dayLabel);
         });
         
-        // Create empty tiles for days before the 1st
         for (let i = 0; i < firstDayOfMonth; i++) {
             const emptyDay = document.createElement('div');
             emptyDay.className = 'calendar-day';
@@ -1399,7 +1525,6 @@
             const dayTile = document.createElement('div');
             dayTile.className = 'calendar-day';
             
-            // Add content (day number)
             const dayContent = document.createElement('div');
             dayContent.className = 'calendar-day-content';
             dayContent.textContent = i;
@@ -1414,28 +1539,68 @@
             }
 
             if (dayData) {
-                if (dayData.productiveMinutes > dayData.wastedMinutes) {
+                if (dayData.productiveMinutes > dayData.lowReturnMinutes) {
                     dayTile.classList.add('productive-day');
-                } else if (dayData.wastedMinutes > dayData.productiveMinutes) {
-                    dayTile.classList.add('wasted-day');
-                } else if (dayData.productiveMinutes > 0 && dayData.wastedMinutes > 0) {
+                } else if (dayData.lowReturnMinutes > dayData.productiveMinutes) {
+                    dayTile.classList.add('low-return-day');
+                } else if (dayData.productiveMinutes > 0 && dayData.lowReturnMinutes > 0) {
                     dayTile.classList.add('balanced-day');
                 }
                 
-                // Add tooltip
                 const tooltip = document.createElement('div');
                 tooltip.className = 'calendar-day-tooltip';
                 tooltip.innerHTML = `
                     <strong>${dateKey}</strong><br>
-                    Productive: ${dayData.productiveMinutes} mins<br>
-                    Wasted: ${dayData.wastedMinutes} mins<br>
-                    Necessary: ${dayData.necessaryMinutes} mins
+                    Productive: ${dayData.productiveMinutes} tokens<br>
+                    ${termMessage}: ${dayData.lowReturnMinutes} tokens<br>
+                    Necessary: ${dayData.necessaryMinutes} tokens
                 `;
                 dayTile.appendChild(tooltip);
             }
             
             calendarGrid.appendChild(dayTile);
         }
+    };
+    
+    // --- MODAL LOGIC ---
+    function showInfoModal(message) {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">1440TIME™ Notification</div>
+                <div class="modal-body">
+                    <p>${message}</p>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="this.closest('.modal-overlay').remove()">OK</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        modal.style.display = 'flex';
+    }
+
+    window.showTour = function() {
+        welcomeTourModal.style.display = 'flex';
+    };
+
+    window.closeTour = function() {
+        welcomeTourModal.style.display = 'none';
+        localStorage.setItem('1440time_tour_seen', 'true');
+    };
+    
+    window.openSettings = function() {
+        settingsModal.style.display = 'flex';
+        tokenTerminologySelect.value = tokenTerminology;
+    };
+    
+    window.closeSettings = function() {
+        tokenTerminology = tokenTerminologySelect.value;
+        saveState();
+        updateTerminologyUI(); // Update UI immediately after closing settings
+        updateAllCalculations(); // Recalculate and update all UI
+        settingsModal.style.display = 'none';
     };
 
     // --- EVENT HANDLERS ---
@@ -1454,12 +1619,14 @@
       const minutesToAdd = minutes;
 
       if (isNaN(minutesToAdd) || minutesToAdd <= 0 || label === '') {
-        alert("Please enter a valid duration (in minutes) and a description.");
+        const message = "Please enter a valid duration (in tokens) and a description.";
+        showInfoModal(message);
         return;
       }
       
       if (totalLoggedMinutes + minutesToAdd > onTimeTokens) {
-        alert("🚨 WARNING: You have no more On-Time tokens available today! You cannot add more time than you have.");
+        const message = `🚨 WARNING: You have no more On-Time tokens available today! You cannot add more tokens than you have.`;
+        showInfoModal(message);
         return;
       }
       
@@ -1476,10 +1643,9 @@
       renderEntries();
       updateAllCalculations();
       
-      // Clear form inputs
       minutesInput.value = '';
       labelInput.value = '';
-      typeSelect.value = 'waste';
+      typeSelect.value = 'low-return';
     };
 
     window.deleteEntry = function(id) {
@@ -1492,19 +1658,21 @@
     const renderEntries = () => {
       entriesContainer.innerHTML = '';
       if (entries.length === 0) {
-        entriesContainer.innerHTML = '<p style="text-align: center; color: #555; margin-top: 20px;">No entries logged yet. Start tracking your time!</p>';
+        entriesContainer.innerHTML = '<p style="text-align: center; color: #555; margin-top: 20px;">No entries logged yet. Start spending your tokens!</p>';
         return;
       }
       
       entries.forEach(entry => {
         const entryDiv = document.createElement('div');
         entryDiv.className = `entry-item ${entry.type}-entry`;
+        const termLabel = terminologyLabels[tokenTerminology].label;
+        const entryTypeDisplay = entry.type === 'low-return' ? termLabel : entry.type;
         entryDiv.innerHTML = `
           <div class="entry-info">
-            <span class="entry-type-badge badge-${entry.type}">${entry.type}</span>
+            <span class="entry-type-badge badge-${entry.type}">${entryTypeDisplay.toUpperCase()}</span>
             <div class="entry-details">
               <span class="entry-label-text">${entry.label}</span>
-              <p class="entry-minutes-text">${entry.minutes} mins • ${entry.timestamp}</p>
+              <p class="entry-minutes-text">${entry.minutes} tokens • ${entry.timestamp}</p>
             </div>
           </div>
           <button class="delete-btn" onclick="deleteEntry(${entry.id})">Remove</button>
@@ -1515,10 +1683,10 @@
     
     window.startNewDay = function() {
       if (confirm("Are you sure you want to start a new day? This will save your current day's data to history and reset everything.")) {
-        saveDailySummary(); // Save old day's data
+        saveDailySummary();
         entries = [];
         localStorage.removeItem('1440time_entries');
-        localStorage.setItem('1440time_today', new Date().toDateString()); // Set the new day
+        localStorage.setItem('1440time_today', new Date().toDateString());
         today = new Date().toDateString();
         
         renderEntries();
@@ -1538,7 +1706,6 @@
         localStorage.clear();
         entries = [];
         
-        // Reset inputs to default placeholder values
         ageInput.value = '0';
         sleepInput.value = '0';
         workInput.value = '0';
@@ -1553,10 +1720,12 @@
     window.makeCommitment = function() {
       const commitment = document.getElementById('commitmentInput').value.trim();
       if (commitment) {
-        alert(`Commitment made: "${commitment}"\n\nNow, prove it with your actions.`);
+        const message = `Commitment made: "${commitment}"\n\nNow, prove it with your actions.`;
+        showInfoModal(message);
         document.getElementById('commitmentInput').value = '';
       } else {
-        alert("Please write your commitment before signing.");
+        const message = "Please write your commitment before signing.";
+        showInfoModal(message);
       }
     };
     
@@ -1565,24 +1734,23 @@
     const initialize = () => {
       loadState();
       
-      // Reset to 0000 on initial load to force user input
-      ageInput.value = localStorage.getItem('1440time_age') || '0';
-      sleepInput.value = localStorage.getItem('1440time_sleep') || '0';
-      workInput.value = localStorage.getItem('1440time_work') || '0';
-      salaryInput.value = localStorage.getItem('1440time_salary') || '0';
-
-      // Add event listeners to input fields to trigger recalculation on change
       ageInput.addEventListener('input', updateAllCalculations);
       sleepInput.addEventListener('input', updateAllCalculations);
       workInput.addEventListener('input', updateAllCalculations);
       salaryInput.addEventListener('input', updateAllCalculations);
       
       renderEntries();
+      updateTerminologyUI(); // Update UI with initial terminology
       updateAllCalculations();
       updateRealTimeCountdown();
       
-      // Update the live countdown every minute
       setInterval(updateRealTimeCountdown, 60000); 
+
+      // Show the welcome tour if it hasn't been seen before
+      const tourSeen = localStorage.getItem('1440time_tour_seen');
+      if (!tourSeen) {
+          showTour();
+      }
     };
 
     document.addEventListener('DOMContentLoaded', initialize);
