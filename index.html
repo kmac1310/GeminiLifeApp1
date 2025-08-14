@@ -108,6 +108,38 @@
       letter-spacing: 3px;
     }
 
+    .real-time-counter {
+      background: linear-gradient(135deg, rgba(255, 170, 0, 0.1) 0%, rgba(255, 51, 102, 0.1) 100%);
+      border: 2px solid var(--warning);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .real-time-counter-label {
+      font-size: 1.2rem;
+      color: var(--warning);
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .real-time-counter-value {
+      font-size: 3rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--warning), var(--danger));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+
     .truth-banner {
       background: linear-gradient(135deg, rgba(255, 51, 102, 0.2) 0%, rgba(255, 51, 102, 0.05) 100%);
       border: 2px solid var(--danger);
@@ -737,6 +769,11 @@
       <p class="motto">Your Time Choices Are Now Undeniable</p>
     </div>
 
+    <div class="real-time-counter">
+      <div class="real-time-counter-label">MINUTES LEFT TODAY</div>
+      <div class="real-time-counter-value" id="minutesLeftToday">0</div>
+    </div>
+
     <div class="truth-banner">
       <div class="truth-title">⏰ REALITY CHECK: YOUR TIME IS RUNNING OUT</div>
       <div class="truth-stats">
@@ -984,6 +1021,7 @@
     const entriesContainer = document.getElementById('entriesContainer');
     const dayGrid = document.getElementById('dayGrid');
     const mirrorMessage = document.getElementById('mirrorMessage');
+    const minutesLeftTodayDisplay = document.getElementById('minutesLeftToday');
 
     // --- DATA PERSISTENCE ---
     const saveState = () => {
@@ -1013,6 +1051,14 @@
     };
 
     // --- MAIN LOGIC & UI UPDATES ---
+    const updateRealTimeCountdown = () => {
+      const now = new Date();
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+      const millisecondsLeft = endOfDay - now;
+      const minutesLeft = Math.ceil(millisecondsLeft / (1000 * 60));
+      minutesLeftTodayDisplay.textContent = minutesLeft;
+    };
+
     const updateAllCalculations = () => {
       const age = parseFloat(ageInput.value) || 0;
       const sleep = parseFloat(sleepInput.value) || 0;
@@ -1064,15 +1110,15 @@
       document.getElementById('wastedToday').textContent = wastedMinutes;
       document.getElementById('dailyWaste').textContent = wastedMinutes;
       
-      const freeTimeMinutes = availableMinutes - (totalLoggedMinutes - wastedMinutes - productiveMinutes - necessaryMinutes);
-      const wastePercent = (wastedMinutes / freeTimeMinutes * 100 || 0).toFixed(0);
-      const productivePercent = (productiveMinutes / freeTimeMinutes * 100 || 0).toFixed(0);
+      const freeTimeMinutes = availableMinutes - totalLoggedMinutes;
+      const wastePercent = (wastedMinutes / totalLoggedMinutes * 100 || 0).toFixed(0);
+      const productivePercent = (productiveMinutes / totalLoggedMinutes * 100 || 0).toFixed(0);
 
       document.getElementById('wastePercent').textContent = `${wastePercent}%`;
       document.getElementById('productivePercent').textContent = `${productivePercent}%`;
       document.getElementById('yearlyWaste').textContent = (wastedMinutes * 365.25 / 60).toFixed(0);
 
-      updateMirrorMessage(wastedMinutes, productiveMinutes, availableMinutes);
+      updateMirrorMessage(wastedMinutes, productiveMinutes, availableMinutes, totalLoggedMinutes);
       generateDayGrid(sleep, work, entries);
     };
 
@@ -1122,16 +1168,18 @@
       }
     };
     
-    const updateMirrorMessage = (wasted, productive, available) => {
-      const wastedPercent = (wasted / available) * 100 || 0;
-      const productivePercent = (productive / available) * 100 || 0;
+    const updateMirrorMessage = (wasted, productive, available, totalLogged) => {
       let message = '';
       
+      const availableLogged = totalLogged;
+      const wastedPercent = (wasted / availableLogged * 100 || 0).toFixed(0);
+      const productivePercent = (productive / availableLogged * 100 || 0).toFixed(0);
+      
       if (wasted > productive && wasted > 0) {
-        message = `You've wasted ${wasted} minutes today. This is ${wastedPercent.toFixed(0)}% of your available time. Are you proud of this?`;
+        message = `You've wasted ${wasted} minutes today. This is ${wastedPercent}% of your logged time. Your choices matter.`;
         mirrorMessage.classList.add('flash-warning');
       } else if (productive > wasted && productive > 0) {
-        message = `Great job! You've used ${productive} minutes for productive activities. This is ${productivePercent.toFixed(0)}% of your available time. Keep going!`;
+        message = `Great job! You've used ${productive} minutes for productive activities. That's ${productivePercent}% of your logged time. Keep going!`;
         mirrorMessage.classList.remove('flash-warning');
       } else if (wasted === 0 && productive === 0) {
         message = `You have ${available} minutes of unallocated time. How will you use it?`;
@@ -1274,6 +1322,10 @@
       
       renderEntries();
       updateAllCalculations();
+      updateRealTimeCountdown();
+      
+      // Update the live countdown every minute
+      setInterval(updateRealTimeCountdown, 60000); 
     };
 
     document.addEventListener('DOMContentLoaded', initialize);
