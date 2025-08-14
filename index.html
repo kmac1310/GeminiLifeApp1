@@ -21,6 +21,7 @@
       --dark: #0a0a0a;
       --card: rgba(255, 255, 255, 0.03);
       --border: rgba(255, 255, 255, 0.1);
+      --on-time-available: #2c2c2c; /* New color for available on-time blocks */
     }
 
     body {
@@ -433,7 +434,7 @@
     .hour-work { background: #e74c3c; }
     .hour-waste { background: var(--waste); }
     .hour-productive { background: var(--success); }
-    .hour-available { background: rgba(255, 255, 255, 0.1); }
+    .hour-available { background: var(--on-time-available); }
     .hour-necessary { background: #3498db; }
 
     .activity-categories {
@@ -1194,14 +1195,13 @@
       const age = parseFloat(ageInput.value) || 0;
       const sleep = parseFloat(sleepInput.value) || 0;
       const work = parseFloat(workInput.value) || 0;
-      const salary = parseFloat(salaryInput.value) || 0;
       
-      // Ensure sleep and work don't exceed 24 hours
       if (sleep + work > 24) {
         alert("Sleep and work hours cannot exceed 24 in total. Please adjust.");
         return;
       }
       
+      const salary = parseFloat(salaryInput.value) || 0;
       const sleepMinutes = Math.round(sleep * 60);
       const workMinutes = Math.round(work * 60);
       const availableMinutes = 1440 - sleepMinutes - workMinutes;
@@ -1212,14 +1212,14 @@
 
       // Dollar per minute
       if (salary > 0 && workMinutes > 0) {
-        const yearlyWorkMinutes = workMinutes * 5 * 52; // Assuming 5 work days/week
+        const yearlyWorkMinutes = workMinutes * 5 * 52; 
         const dollarPerMin = (salary / yearlyWorkMinutes).toFixed(2);
         document.getElementById('dollarPerMin').textContent = `$${dollarPerMin}`;
       } else {
         document.getElementById('dollarPerMin').textContent = '$0.00';
       }
 
-      // Lifetime stats based on 80-year expectancy
+      // Lifetime stats
       const totalMinutesInLife = 1440 * 365.25 * LIFETIME_EXPECTANCY_YEARS;
       const minutesLived = Math.round(1440 * 365.25 * age);
       const minutesLeft = totalMinutesInLife - minutesLived;
@@ -1236,7 +1236,6 @@
       const totalLoggedMinutes = entries.reduce((sum, entry) => sum + entry.minutes, 0);
       const wastedMinutes = entries.filter(e => e.type === 'waste').reduce((sum, entry) => sum + entry.minutes, 0);
       const productiveMinutes = entries.filter(e => e.type === 'productive').reduce((sum, entry) => sum + entry.minutes, 0);
-      const necessaryMinutes = entries.filter(e => e.type === 'necessary').reduce((sum, entry) => sum + entry.minutes, 0);
       
       document.getElementById('wastedToday').textContent = wastedMinutes;
       document.getElementById('dailyWaste').textContent = wastedMinutes;
@@ -1254,49 +1253,72 @@
     };
 
     const generateDayGrid = (sleep, work, entries) => {
-      dayGrid.innerHTML = '';
-      const totalBlocks = 24;
-      const sleepMinutes = Math.round(sleep * 60);
-      const workMinutes = Math.round(work * 60);
-      const totalSleepBlocks = Math.ceil(sleepMinutes / 60);
-      const totalWorkBlocks = Math.ceil(workMinutes / 60);
-      
-      const hourlyEntries = new Array(totalBlocks).fill(0).map(() => ({ productive: 0, waste: 0, necessary: 0 }));
-      entries.forEach(entry => {
-        const startHour = 0; // Simplified assumption for visualization
-        const endHour = startHour + Math.ceil(entry.minutes / 60);
-        for (let i = 0; i < Math.ceil(entry.minutes / 60); i++) {
-          const hourIndex = (startHour + i) % 24;
-          if (hourlyEntries[hourIndex]) {
-            hourlyEntries[hourIndex][entry.type] += Math.min(60, entry.minutes);
-          }
-        }
-      });
-
-      for (let i = 0; i < totalBlocks; i++) {
-        let blockClass = 'hour-available';
-        let tooltip = `Hour ${i}:00 - ${i}:59`;
-
-        if (i < totalSleepBlocks) {
-          blockClass = 'hour-sleep';
-          tooltip = `Sleep Zone (${sleep} hours)`;
-        } else if (i < totalSleepBlocks + totalWorkBlocks) {
-          blockClass = 'hour-work';
-          tooltip = `Livelihood Zone (${work} hours)`;
-        } else {
-          const entryCounts = hourlyEntries[i];
-          const sortedEntries = Object.keys(entryCounts).sort((a, b) => entryCounts[b] - entryCounts[a]);
-          if (entryCounts[sortedEntries[0]] > 0) {
-            blockClass = `hour-${sortedEntries[0]}`;
-            tooltip = `Logged: ${entryCounts[sortedEntries[0]]} min (${sortedEntries[0]})`;
-          }
+        dayGrid.innerHTML = '';
+        const totalBlocks = 24;
+        const totalMinutes = 1440;
+        
+        const sleepHours = parseFloat(sleep) || 0;
+        const workHours = parseFloat(work) || 0;
+        
+        const sleepBlocks = Math.round((sleepHours / 24) * totalBlocks);
+        const workBlocks = Math.round((workHours / 24) * totalBlocks);
+        
+        let loggedEntries = {};
+        entries.forEach(entry => {
+            if (!loggedEntries[entry.type]) {
+                loggedEntries[entry.type] = 0;
+            }
+            loggedEntries[entry.type] += entry.minutes;
+        });
+        
+        const loggedBlocks = {};
+        let totalLoggedBlocks = 0;
+        for (const type in loggedEntries) {
+            loggedBlocks[type] = Math.round((loggedEntries[type] / totalMinutes) * totalBlocks);
+            totalLoggedBlocks += loggedBlocks[type];
         }
         
-        const block = document.createElement('div');
-        block.className = `hour-block ${blockClass}`;
-        block.title = tooltip;
-        dayGrid.appendChild(block);
-      }
+        // Render sleep blocks
+        for (let i = 0; i < sleepBlocks; i++) {
+            const block = document.createElement('div');
+            block.className = `hour-block hour-sleep`;
+            block.title = `Sleep Zone (${sleepHours} hours)`;
+            dayGrid.appendChild(block);
+        }
+
+        // Render work blocks
+        for (let i = 0; i < workBlocks; i++) {
+            const block = document.createElement('div');
+            block.className = `hour-block hour-work`;
+            block.title = `Livelihood Zone (${workHours} hours)`;
+            dayGrid.appendChild(block);
+        }
+
+        // Render on-time blocks (logged and available)
+        let totalOnTimeBlocks = totalBlocks - sleepBlocks - workBlocks;
+        let blocksRendered = 0;
+        
+        // Render logged on-time blocks
+        const typeOrder = ['productive', 'waste', 'necessary'];
+        typeOrder.forEach(type => {
+            const count = loggedBlocks[type] || 0;
+            for (let i = 0; i < count; i++) {
+                const block = document.createElement('div');
+                block.className = `hour-block hour-${type}`;
+                block.title = `Logged: ${entries.filter(e => e.type === type).reduce((sum, e) => sum + e.minutes, 0)} minutes (${type})`;
+                dayGrid.appendChild(block);
+                blocksRendered++;
+            }
+        });
+        
+        // Render remaining available on-time blocks
+        const availableBlocks = totalOnTimeBlocks - blocksRendered;
+        for (let i = 0; i < availableBlocks; i++) {
+            const block = document.createElement('div');
+            block.className = `hour-block hour-available`;
+            block.title = 'Available Time: Log your activities!';
+            dayGrid.appendChild(block);
+        }
     };
     
     const updateMirrorMessage = (wasted, productive, available, totalLogged) => {
@@ -1523,10 +1545,10 @@
       loadState();
       
       // Reset to 0000 on initial load to force user input
-      ageInput.value = '0';
-      sleepInput.value = '0';
-      workInput.value = '0';
-      salaryInput.value = '0';
+      ageInput.value = localStorage.getItem('1440time_age') || '0';
+      sleepInput.value = localStorage.getItem('1440time_sleep') || '0';
+      workInput.value = localStorage.getItem('1440time_work') || '0';
+      salaryInput.value = localStorage.getItem('1440time_salary') || '0';
 
       // Add event listeners to input fields to trigger recalculation on change
       ageInput.addEventListener('input', updateAllCalculations);
