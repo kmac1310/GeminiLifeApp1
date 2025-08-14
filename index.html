@@ -661,6 +661,96 @@
       font-size: 0.9rem;
       line-height: 1.4;
     }
+    
+    .historical-insights {
+        display: none; /* Initially hidden */
+        margin-top: 30px;
+        background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+        border: 2px solid var(--success);
+        border-radius: 20px;
+        padding: 30px;
+    }
+    
+    .historical-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+    
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .calendar-day-label {
+        font-size: 0.8rem;
+        color: #999;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+    
+    .calendar-day {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; /* Makes cells square */
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        overflow: hidden;
+    }
+    
+    .calendar-day-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+    
+    .calendar-day:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+        z-index: 1;
+    }
+    
+    .calendar-day.productive-day { background: var(--success); }
+    .calendar-day.wasted-day { background: var(--danger); }
+    .calendar-day.balanced-day { background: var(--warning); }
+    .calendar-day.today-day { border: 2px solid var(--secondary); }
+    .calendar-day.future-day { opacity: 0.5; cursor: not-allowed; }
+    
+    .calendar-day-tooltip {
+        position: absolute;
+        bottom: 110%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: #fff;
+        padding: 10px;
+        border-radius: 8px;
+        white-space: nowrap;
+        font-size: 0.8rem;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 10;
+        border: 1px solid var(--border);
+    }
+    
+    .calendar-day:hover .calendar-day-tooltip {
+        opacity: 1;
+    }
 
     .mirror-section {
       background: rgba(0, 0, 0, 0.8);
@@ -959,11 +1049,11 @@
       <div class="accountability-grid">
         <div class="accountability-card">
           <div class="accountability-value" id="wastePercent">0%</div>
-          <div class="accountability-message">Of your free time is WASTED</div>
+          <div class="accountability-message">Of your logged time is WASTED</div>
         </div>
         <div class="accountability-card">
           <div class="accountability-value" id="productivePercent">0%</div>
-          <div class="accountability-message">Of your free time is PRODUCTIVE</div>
+          <div class="accountability-message">Of your logged time is PRODUCTIVE</div>
         </div>
         <div class="accountability-card">
           <div class="accountability-value" id="dailyWaste">0</div>
@@ -974,6 +1064,14 @@
           <div class="accountability-message">Hours wasted this YEAR</div>
         </div>
       </div>
+    </div>
+
+    <div class="historical-insights">
+        <div class="historical-header">
+            <h2 style="color: var(--secondary);">📅 Historical Insights</h2>
+            <button onclick="toggleHistory()" style="background: var(--border); color: #fff; padding: 8px 15px;">Close History</button>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
     <div class="mirror-section">
@@ -999,6 +1097,14 @@
         font-size: 0.85rem;
         text-transform: uppercase;
       ">⚠️ Complete System Reset</button>
+      <button onclick="toggleHistory()" style="
+        background: var(--border);
+        color: #fff;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+      ">View Historical Data</button>
       <p class="trademark">Think Outside the Clock™ • Control the Clock – Control the Game™</p>
       <p>© 2024 1440TIME™ System • The Truth is Undeniable</p>
     </div>
@@ -1008,6 +1114,7 @@
     // --- STATE MANAGEMENT ---
     let entries = [];
     let today = new Date().toDateString();
+    let currentDate = new Date();
     const LIFETIME_EXPECTANCY_YEARS = 80;
 
     // --- DOM REFERENCES ---
@@ -1022,6 +1129,8 @@
     const dayGrid = document.getElementById('dayGrid');
     const mirrorMessage = document.getElementById('mirrorMessage');
     const minutesLeftTodayDisplay = document.getElementById('minutesLeftToday');
+    const historicalInsights = document.querySelector('.historical-insights');
+    const calendarGrid = document.getElementById('calendarGrid');
 
     // --- DATA PERSISTENCE ---
     const saveState = () => {
@@ -1040,6 +1149,8 @@
       }
       const savedToday = localStorage.getItem('1440time_today');
       if (savedToday !== today) {
+        // This is a new day, so save the old one before resetting
+        saveDailySummary();
         entries = [];
         localStorage.removeItem('1440time_entries');
         localStorage.setItem('1440time_today', today);
@@ -1048,6 +1159,26 @@
       sleepInput.value = localStorage.getItem('1440time_sleep') || '0';
       workInput.value = localStorage.getItem('1440time_work') || '0';
       salaryInput.value = localStorage.getItem('1440time_salary') || '0';
+    };
+    
+    const saveDailySummary = () => {
+        const history = JSON.parse(localStorage.getItem('1440time_history')) || {};
+        const wastedMinutes = entries.filter(e => e.type === 'waste').reduce((sum, entry) => sum + entry.minutes, 0);
+        const productiveMinutes = entries.filter(e => e.type === 'productive').reduce((sum, entry) => sum + entry.minutes, 0);
+        const necessaryMinutes = entries.filter(e => e.type === 'necessary').reduce((sum, entry) => sum + entry.minutes, 0);
+        const totalLogged = wastedMinutes + productiveMinutes + necessaryMinutes;
+        
+        const summary = {
+            wastedMinutes,
+            productiveMinutes,
+            necessaryMinutes,
+            totalLogged
+        };
+        
+        // Use the saved date from localStorage, not the current date, to save the old day's data
+        const oldDate = localStorage.getItem('1440time_today') || today;
+        history[oldDate] = summary;
+        localStorage.setItem('1440time_history', JSON.stringify(history));
     };
 
     // --- MAIN LOGIC & UI UPDATES ---
@@ -1110,7 +1241,6 @@
       document.getElementById('wastedToday').textContent = wastedMinutes;
       document.getElementById('dailyWaste').textContent = wastedMinutes;
       
-      const freeTimeMinutes = availableMinutes - totalLoggedMinutes;
       const wastePercent = (wastedMinutes / totalLoggedMinutes * 100 || 0).toFixed(0);
       const productivePercent = (productiveMinutes / totalLoggedMinutes * 100 || 0).toFixed(0);
 
@@ -1120,6 +1250,7 @@
 
       updateMirrorMessage(wastedMinutes, productiveMinutes, availableMinutes, totalLoggedMinutes);
       generateDayGrid(sleep, work, entries);
+      renderHistoricalData();
     };
 
     const generateDayGrid = (sleep, work, entries) => {
@@ -1192,6 +1323,78 @@
       mirrorMessage.textContent = message;
     };
     
+    const renderHistoricalData = () => {
+        calendarGrid.innerHTML = '';
+        const history = JSON.parse(localStorage.getItem('1440time_history')) || {};
+        
+        const todayKey = new Date().toDateString();
+        
+        // Generate last 30 days of calendar data
+        const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+        const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay(); // 0 for Sunday, 1 for Monday
+        
+        const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        dayLabels.forEach(label => {
+            const dayLabel = document.createElement('div');
+            dayLabel.className = 'calendar-day-label';
+            dayLabel.textContent = label;
+            calendarGrid.appendChild(dayLabel);
+        });
+        
+        // Create empty tiles for days before the 1st
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'calendar-day';
+            calendarGrid.appendChild(emptyDay);
+        }
+        
+        for (let i = 1; i <= daysInMonth; i++) {
+            const day = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
+            const dateKey = day.toDateString();
+            const dayData = history[dateKey];
+            
+            const dayTile = document.createElement('div');
+            dayTile.className = 'calendar-day';
+            
+            // Add content (day number)
+            const dayContent = document.createElement('div');
+            dayContent.className = 'calendar-day-content';
+            dayContent.textContent = i;
+            dayTile.appendChild(dayContent);
+            
+            if (dateKey === todayKey) {
+                dayTile.classList.add('today-day');
+            }
+            
+            if (day > new Date()) {
+                 dayTile.classList.add('future-day');
+            }
+
+            if (dayData) {
+                if (dayData.productiveMinutes > dayData.wastedMinutes) {
+                    dayTile.classList.add('productive-day');
+                } else if (dayData.wastedMinutes > dayData.productiveMinutes) {
+                    dayTile.classList.add('wasted-day');
+                } else if (dayData.productiveMinutes > 0 && dayData.wastedMinutes > 0) {
+                    dayTile.classList.add('balanced-day');
+                }
+                
+                // Add tooltip
+                const tooltip = document.createElement('div');
+                tooltip.className = 'calendar-day-tooltip';
+                tooltip.innerHTML = `
+                    <strong>${dateKey}</strong><br>
+                    Productive: ${dayData.productiveMinutes} mins<br>
+                    Wasted: ${dayData.wastedMinutes} mins<br>
+                    Necessary: ${dayData.necessaryMinutes} mins
+                `;
+                dayTile.appendChild(tooltip);
+            }
+            
+            calendarGrid.appendChild(dayTile);
+        }
+    };
+
     // --- EVENT HANDLERS ---
     
     window.setActivity = function(label, type) {
@@ -1268,16 +1471,27 @@
     };
     
     window.startNewDay = function() {
-      if (confirm("Are you sure you want to start a new day? This will clear all entries for today.")) {
+      if (confirm("Are you sure you want to start a new day? This will save your current day's data to history and reset everything.")) {
+        saveDailySummary(); // Save old day's data
         entries = [];
-        saveState();
+        localStorage.removeItem('1440time_entries');
+        localStorage.setItem('1440time_today', new Date().toDateString()); // Set the new day
+        today = new Date().toDateString();
+        
         renderEntries();
         updateAllCalculations();
       }
     };
     
+    window.toggleHistory = function() {
+        historicalInsights.style.display = historicalInsights.style.display === 'block' ? 'none' : 'block';
+        if (historicalInsights.style.display === 'block') {
+             renderHistoricalData();
+        }
+    };
+    
     window.resetEverything = function() {
-      if (confirm("⚠️ WARNING: This will delete ALL data (entries, age, salary, etc.) permanently. Are you sure?")) {
+      if (confirm("⚠️ WARNING: This will delete ALL data (entries, history, age, salary, etc.) permanently. Are you sure?")) {
         localStorage.clear();
         entries = [];
         
