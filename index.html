@@ -22,6 +22,7 @@
       --card: rgba(255, 255, 255, 0.03);
       --border: rgba(255, 255, 255, 0.1);
       --on-time-available: #2c2c2c; /* New color for available on-time blocks */
+      --on-time-label: #00d4ff; /* Color for the new on-time countdown label */
     }
 
     body {
@@ -364,6 +365,20 @@
     .reality-card.productive {
       border-color: var(--success);
       background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 0, 0, 0.5) 100%);
+    }
+    
+    .reality-card-on-time {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .on-time-countdown {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      color: var(--on-time-label);
+      font-weight: 700;
     }
 
     .reality-value {
@@ -932,10 +947,11 @@
           <div class="reality-label">Livelihood Zone</div>
           <div class="reality-verdict" style="background: rgba(255, 121, 121, 0.2); color: #ff7979;">💼 MEANS OF SUPPORT</div>
         </div>
-        <div class="reality-card productive">
+        <div class="reality-card productive reality-card-on-time">
           <div class="reality-value" id="onTimeTokens" style="color: var(--primary);">0</div>
           <div class="reality-label">On-Time Zone</div>
           <div class="reality-verdict verdict-productive">🚀 THE DIFFERENCE MAKER</div>
+          <div class="on-time-countdown" id="onTimeRemaining">0 MINUTES REMAINING</div>
         </div>
         <div class="reality-card">
           <div class="reality-value" id="dollarPerMin">$0.00</div>
@@ -1132,6 +1148,7 @@
     const minutesLeftTodayDisplay = document.getElementById('minutesLeftToday');
     const historicalInsights = document.querySelector('.historical-insights');
     const calendarGrid = document.getElementById('calendarGrid');
+    const onTimeRemainingDisplay = document.getElementById('onTimeRemaining');
 
     // --- DATA PERSISTENCE ---
     const saveState = () => {
@@ -1246,6 +1263,10 @@
       document.getElementById('wastePercent').textContent = `${wastePercent}%`;
       document.getElementById('productivePercent').textContent = `${productivePercent}%`;
       document.getElementById('yearlyWaste').textContent = (wastedMinutes * 365.25 / 60).toFixed(0);
+      
+      // NEW: Calculate and display remaining on-time minutes
+      const onTimeRemaining = availableMinutes - totalLoggedMinutes;
+      onTimeRemainingDisplay.textContent = `${onTimeRemaining} MINUTES REMAINING`;
 
       updateMirrorMessage(wastedMinutes, productiveMinutes, availableMinutes, totalLoggedMinutes);
       generateDayGrid(sleep, work, entries);
