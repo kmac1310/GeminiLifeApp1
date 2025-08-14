@@ -971,7 +971,7 @@
     // --- STATE MANAGEMENT ---
     let entries = [];
     let today = new Date().toDateString();
-    const LIFETIME_EXPECTANCY_YEARS = 82;
+    const LIFETIME_EXPECTANCY_YEARS = 80; // Changed from 82 to 80
 
     // --- DOM REFERENCES ---
     const ageInput = document.getElementById('age');
@@ -1042,7 +1042,7 @@
         document.getElementById('dollarPerMin').textContent = '$0.00';
       }
 
-      // Lifetime stats based on 82-year expectancy
+      // Lifetime stats based on 80-year expectancy
       const totalMinutesInLife = 1440 * 365.25 * LIFETIME_EXPECTANCY_YEARS;
       const minutesLived = Math.round(1440 * 365.25 * age);
       const minutesLeft = totalMinutesInLife - minutesLived;
